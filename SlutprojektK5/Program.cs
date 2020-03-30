@@ -13,74 +13,103 @@ namespace SlutprojektK5
         static void Main(string[] args)
         {
             bool gameStart = false;
-            bool countDown = true;
+            bool revPhase = true;
 
+            int revSpeed = 0;
 
-            while (countDown == true)
+            while (revPhase == true)
             {
-                CountDown();
-                if (CountDown() < 5000)
+                revSpeed = CountDown();
+                if (revSpeed < 1100)
                 {
                     gameStart = true;
-                    countDown = false;
+                    revPhase = false;
                 }
-                else if (CountDown() == 9999)
+                if (revSpeed >= 3000)
                 {
-                    Console.WriteLine("YOU LOST");
-                    Thread.Sleep(10000);
+                    Thread.Sleep(5000);
                     Console.Clear();
+                    revPhase = false;
                 }
             }
 
-            Console.WriteLine("Hej");
-
             while (gameStart == true)
             {
-                //GasPedal();
+                Runway(revSpeed);
             }
 
             Console.ReadLine();
         }
 
+
+
         static int CountDown()
         {
-            int clock = 900;
+            int clock = 500;
             int speed = 0;
 
             while (clock > 0)
             {
-                
-                Console.WriteLine(speed);
-                Console.WriteLine(clock);
                 clock -= 1;
 
-                if (Console.KeyAvailable)
+
+                speed = GasPedal(speed);
+                if (speed > 3000)
                 {
-                    ConsoleKeyInfo info = Console.ReadKey(true);
-                    if (info.Key == ConsoleKey.LeftArrow)
-                    {
-                        return 9999;
-                    }
-                    else if (info.Key == ConsoleKey.Spacebar)
-                    {
-                        if (speed < 1000)
-                        {
-                            speed = speed + 50;
-                        }
-                    }
+                    return speed;
                 }
-                else
-                {
-                    {
-                        if (speed > 0)
-                        {
-                            speed -= 5;
-                        }
-                    }
-                }
-                Thread.Sleep(1000);
+
+
+                Thread.Sleep(10);
+
+                Console.Clear();
+
+                Console.WriteLine(speed + " Speed");
+                Console.WriteLine(clock + " Clock");
+
             }
             return speed;
+
         }
+
+        static int Runway (int revSpeed)
+        {
+            Thread.Sleep(2000);
+            Console.WriteLine(revSpeed + " Si SNJOR");
+            Thread.Sleep(2000);
+            return revSpeed;
+
+        }
+
+        static int GasPedal(int speed)
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo info = Console.ReadKey(true);
+
+                if (info.Key == ConsoleKey.LeftArrow || speed > 1300)
+                {
+                    return 5000;
+                }
+                if (info.Key == ConsoleKey.Spacebar)
+                {
+                    if (speed < 1300)
+                    {
+                        speed = speed + 50;
+                    }
+                }
+            }
+            else
+            {
+                if (speed >= 10)
+                {
+                    speed -= 10;
+                }
+            }
+            return speed;
+
+        }
+
     }
+
 }
