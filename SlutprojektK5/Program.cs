@@ -12,6 +12,8 @@ namespace SlutprojektK5
     {
         static void Main(string[] args)
         {
+            Tutorial();
+
             bool gameStart = false;
             bool revPhase = true;
 
@@ -27,17 +29,18 @@ namespace SlutprojektK5
                 }
                 if (revSpeed >= 3000)
                 {
-                    Thread.Sleep(5000);
-                    Console.Clear();
                     revPhase = false;
                 }
             }
 
             while (gameStart == true)
             {
-                Runway(revSpeed);
+                int gameOn = Runway(revSpeed); 
+                if (gameOn > 18000)
+                {
+                    gameStart = false;
+                }
             }
-
             Console.ReadLine();
         }
 
@@ -45,13 +48,12 @@ namespace SlutprojektK5
 
         static int CountDown()
         {
-            int clock = 500;
+            int clock = 250;
             int speed = 0;
 
             while (clock > 0)
             {
                 clock -= 1;
-
 
                 speed = GasPedal(speed);
                 if (speed > 3000)
@@ -59,11 +61,9 @@ namespace SlutprojektK5
                     return speed;
                 }
 
-
                 Thread.Sleep(10);
 
                 Console.Clear();
-
                 Console.WriteLine(speed + " Speed");
                 Console.WriteLine(clock + " Clock");
 
@@ -72,22 +72,53 @@ namespace SlutprojektK5
 
         }
 
-        static int Runway (int revSpeed)
-        {
-            Thread.Sleep(2000);
-            Console.WriteLine(revSpeed + " Si SNJOR");
-            Thread.Sleep(2000);
-            return revSpeed;
 
+
+        static int Runway(int revSpeed)
+        {
+
+            int currentSpeed = revSpeed;
+            
+            int clock = 1000;
+            int gear = 0;
+
+            while (clock > 1)
+            {
+                revSpeed = GasPedal(revSpeed);
+                if (revSpeed > 18000)
+                {
+                    return 20000;
+                }
+                if (revSpeed >= 4500 && gear < 6)
+                {
+                    gear++;
+                    revSpeed = 500;
+                }
+
+                clock--;
+                Thread.Sleep(10);
+
+                Console.Clear();
+
+                Console.WriteLine(clock + " Clock");
+                Console.WriteLine(gear + " Gear");
+                Console.WriteLine(revSpeed + " Speed");
+
+            }
+            
+            return 0;
         }
+
+
 
         static int GasPedal(int speed)
         {
+
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);
 
-                if (info.Key == ConsoleKey.LeftArrow || speed > 1300)
+                if (info.Key == ConsoleKey.LeftArrow)
                 {
                     return 5000;
                 }
@@ -106,10 +137,44 @@ namespace SlutprojektK5
                     speed -= 10;
                 }
             }
+
+            if (speed > 1330)
+            {
+                return 20000;
+            }
+
             return speed;
 
         }
 
+
+
+        static void Tutorial()
+        {
+            Console.WriteLine("Welcome to Drangster A2600!\n\n" +
+            "This is a driving game where you strive to reach the highes score possible" + 
+            "\n\nPress Enter to continue...");
+
+            Console.ReadLine();
+            Console.Clear();
+
+            Console.WriteLine("To increase speed press Space Bar to engage throttle.\nTo shift up a gear, press Left Arrowkey");
+            Console.WriteLine("Readdy? Press Enter to continue...");
+            Console.ReadLine();
+
+            Countdown();
+        }
+
+        static void Countdown()
+        {
+            
+            for (int i = 3; i > 0; i--)
+            {
+                Console.Clear();
+                Console.WriteLine(i + "...");
+                Thread.Sleep(1000);
+            }
+        }
     }
 
 }
