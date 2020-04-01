@@ -12,15 +12,22 @@ namespace SlutprojektK5
     {
         static void Main(string[] args)
         {
+            // Går ned till tutorial metoden för att förklara för spelaren hur man gör
             Tutorial();
 
+            // bool för att starta spelet efter att man har gasat motorn lite
             bool gameStart = false;
+            // boll för stunden innan racet börjar
             bool revPhase = true;
 
+            // RPM hastighet
             int revSpeed = 0;
 
+            // loop för stunden innan racet
             while (revPhase == true)
             {
+                // hämtar in från metoden countdown för att se om spelaren inte har sprängt sin motor genom att träda över
+                // RPM gränsen på 1300
                 revSpeed = CountDown();
                 if (revSpeed < 1100)
                 {
@@ -32,7 +39,8 @@ namespace SlutprojektK5
                     revPhase = false;
                 }
             }
-
+            // Om spelaren var inom rimliga gränser kommer whileloopen att starta spelet och racet börjar.
+            //åter igen kollar metoden Runway om spelaren går över 1300.
             while (gameStart == true)
             {
                 int gameOn = Runway(revSpeed); 
@@ -48,24 +56,23 @@ namespace SlutprojektK5
 
         static int CountDown()
         {
+            // Tid under början av racet
             int clock = 250;
+            // RPM hastigheten spelaren har
             int speed = 0;
 
+            // loop som körs till tiden har tagit slut.
             while (clock > 0)
             {
                 clock -= 1;
-
-                speed = GasPedal(speed);
+                // anropar metod för gaspedalen
+                speed = Accelerator(speed);
                 if (speed > 3000)
                 {
                     return speed;
                 }
-
+                //saktar ned konsolen 10ms
                 Thread.Sleep(10);
-
-                Console.Clear();
-                Console.WriteLine(speed + " Speed");
-                Console.WriteLine(clock + " Clock");
 
             }
             return speed;
@@ -73,37 +80,38 @@ namespace SlutprojektK5
         }
 
 
-
+        //Metod för huvuddelev utav spelet
         static int Runway(int revSpeed)
         {
 
             int currentSpeed = revSpeed;
-            
+            //tid för denna period av spelet
             int clock = 1000;
+            //Vilken växel man har
             int gear = 0;
 
             while (clock > 1)
             {
-                revSpeed = GasPedal(revSpeed);
+                //Metod för att skriva ut det som man ser på skärmen
+                UserInterface(revSpeed, gear, clock);
+
+                //Anropar metod för gaspedal för att åter igen se till så att spelaren inte spränger sin motor
+                revSpeed = Accelerator(revSpeed);
                 if (revSpeed > 18000)
                 {
                     return 20000;
                 }
+                // om spelaren växlar upp så ++ på gear
                 if (revSpeed >= 4500 && gear < 6)
                 {
                     gear++;
                     revSpeed = 500;
                 }
 
+                //drar av 1 på tiden
                 clock--;
+                //stannar konsolen i 10ms
                 Thread.Sleep(10);
-
-                Console.Clear();
-
-                Console.WriteLine(clock + " Clock");
-                Console.WriteLine(gear + " Gear");
-                Console.WriteLine(revSpeed + " Speed");
-
             }
             
             return 0;
@@ -111,9 +119,9 @@ namespace SlutprojektK5
 
 
 
-        static int GasPedal(int speed)
+        static int Accelerator(int speed)
         {
-
+            
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);
@@ -149,6 +157,33 @@ namespace SlutprojektK5
 
 
 
+        static void UserInterface(int speed, int gear, int clock)
+        {
+
+            Console.Clear();
+
+            int uiBar = speed / 50;
+
+            Console.WriteLine("Time:" + clock + " | RPM: " + speed + " | Gear [" + gear + "]");
+            
+            Console.Write("SPEED-O-METER: [");
+            for (int i = 0; i < uiBar; i++)
+            {
+                if (uiBar < 20)
+                {
+                    Console.Write("#");
+                }
+                else
+                {
+                    Console.Write("$");
+                }
+            }
+            Console.WriteLine("]");
+
+        }
+
+
+
         static void Tutorial()
         {
             Console.WriteLine("Welcome to Drangster A2600!\n\n" +
@@ -164,7 +199,6 @@ namespace SlutprojektK5
 
             Countdown();
         }
-
         static void Countdown()
         {
             
